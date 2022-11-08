@@ -13,6 +13,7 @@ common:
       access_key_id: minioadmin
       secret_access_key: minioadmin
       s3forcepathstyle: true
+
   compactor_address: http://loki-write:3100
 
 ingester:
@@ -28,7 +29,7 @@ ingester:
   max_chunk_age: 30s
   wal:
     dir: /var/lib/loki/wal/
-    replay_memory_ceiling: 10KB
+    replay_memory_ceiling: 1000KB
 
 schema_config:
   configs:

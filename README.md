@@ -26,3 +26,32 @@ Inject some data to Loki with:
 ```
 $ docker-compose up log-generator
 ```
+
+## Instruction to use Scaleway Object Storage
+
+Create your bucket (see Terraform instruction in [`./terraform/`](./terraform)).
+
+In `config/loki/config.yaml`, replace this lines:
+
+```
+      endpoint: "minio:9000"
+      insecure: true
+      bucketnames: loki
+      access_key_id: minioadmin
+      secret_access_key: minioadmin
+      s3forcepathstyle: true
+```
+
+By:
+
+```
+      endpoint: s3.fr-par.scw.cloud
+      region: "fr-par"
+      insecure: false
+      bucketnames: "???"
+      access_key_id: ???
+      secret_access_key: ???
+      s3forcepathstyle: true
+```
+
+Replace `???` by your parameters.

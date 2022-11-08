@@ -1,0 +1,5 @@
+# Fetch your credential in https://console.scaleway.com/project/credentials page
+SCW_ACCESS_KEY="?????"
+SCW_SECRET_KEY="???"
+export SCW_ACCESS_KEY
+export SCW_SECRET_KEY
