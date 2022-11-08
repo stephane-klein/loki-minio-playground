@@ -1,8 +1,6 @@
 # Loki Minio playground
 
-
 Inspiration ressource: https://github.com/grafana/loki/tree/main/production/docker
-
 
 ```sh
 $ docker compose up -d minio
