@@ -29,7 +29,7 @@ $ docker-compose up log-generator
 
 ## Instruction to use Scaleway Object Storage
 
-Create your bucket (see Terraform instruction in [`./terraform/`](./terraform)).
+Create your [Scaleway Object Storage](https://www.scaleway.com/en/object-storage/) bucket (see Terraform instructions in [`./terraform/`](./terraform)).
 
 In `config/loki/config.yaml`, replace this lines:
 
