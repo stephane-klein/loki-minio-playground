@@ -1,0 +1,69 @@
+version: '3.8'
+services:
+  loki:
+    image: grafana/loki:2.6.1
+    user: root
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./config/loki/config.yaml:/etc/loki/local-config.yaml
+      - ./volumes/loki/:/var/lib/loki/
+      - ./volumes/loki-rules/:/rules/
+    depends_on:
+      - minio
+
+  grafana:
+    image: grafana/grafana:9.2.3
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yml
+
+  minio:
+    image: minio/minio:latest
+    ports:
+    - "9000:9000"
+    - "9001:9001"
+    command: server ~ --address ':9000' --console-address ':9001'
+    volumes:
+      - ./volumes/minio/data/:/data/
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc rm -r --force myminio/loki;
+      /usr/bin/mc mb myminio/loki;
+      /usr/bin/mc policy set public myminio/loki;
+      exit 0;
+      "
+
+  promtail:
+    image: grafana/promtail:2.6.1
+    volumes:
+      - ./log-generator/:/var/log/
+      - ./config/promtail/:/etc/promtail/
+    ports:
+      - "9080:9080"
+    command: -config.file=/etc/promtail/promtail.yaml
+
+  log-generator:
+    image: mingrammer/flog
+    command:
+      - --loop
+      - --format=json
+      - --number=10 # number of log lines to generate per second
+      - --delay=100ms # delay between log lines
+      - --output=/var/log/generated-logs.txt
+      - --overwrite
+      - --type=log
+    volumes:
+      - ./log-generator/:/var/log/
+
+networks:
+  default:
+    name: loki
